@@ -1,14 +1,15 @@
-FROM node:19
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json .
+COPY package.json package-lock.json ./
 
-RUN npm install
+RUN npm ci --legacy-peer-deps
 
 COPY . .
 
-EXPOSE 3000
+RUN npm run build
 
-CMD ["npm", "start"]
+RUN npm install -g serve
 
+CMD serve -s build -l ${PORT:-3000}
