@@ -2,4 +2,4 @@
 buildCommand = "CI=false npm install --legacy-peer-deps && CI=false npm run build"
 
 [deploy]
-startCommand = "npx serve -s build"
+startCommand = "npx serve -s build -l $PORT"
