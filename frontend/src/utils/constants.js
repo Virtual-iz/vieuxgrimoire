@@ -1,4 +1,4 @@
-const API_URL = 'https://vieuxgrimoire-production.up.railway.app';
+const API_URL = 'https://vieuxgrimoire-production-1fef.up.railway.app';
 export const API_ROUTES = {
   SIGN_UP: `${API_URL}/api/auth/signup`,
   SIGN_IN: `${API_URL}/api/auth/login`,
