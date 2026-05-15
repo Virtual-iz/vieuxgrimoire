@@ -1,11 +1,22 @@
 const Book = require('../models/Book');
 const fs = require('fs');
 
+const fixImageUrl = (book, req) => {
+  const obj = book.toObject ? book.toObject() : { ...book };
+  if (obj.imageUrl) {
+    obj.imageUrl = obj.imageUrl.replace(
+      /https?:\/\/localhost:\d+/,
+      `${req.protocol}://${req.get('host')}`
+    );
+  }
+  return obj;
+};
+
 /*Renvoie un tableau de tous les livres de la base de données.*/
 exports.getAllBooks = (req, res, next) => {
   Book.find()
-    .then((books) => { 
-        res.status(200).json(books);})
+    .then((books) => {
+        res.status(200).json(books.map(b => fixImageUrl(b, req)));})
     .catch((error) => {
         res.status(400).json({ error: error });});
 };
@@ -16,7 +27,7 @@ exports.getBestRating = (req, res, next) => {
     .sort({ averageRating: -1 }) // Trie par note décroissante
     .limit(3) // Limite à 3 résultats
     .then((books) => {
-      res.status(200).json(books);
+      res.status(200).json(books.map(b => fixImageUrl(b, req)));
     })
     .catch((error) => {
       res.status(400).json({ error: error });
@@ -44,7 +55,7 @@ exports.createBook = (req, res, next) => {
 /*Renvoie le livre avec l’_id fourni.*/
 exports.getOneBook = (req, res, next) => {
   Book.findOne({_id: req.params.id})
-    .then((book) => { res.status(200).json(book); })
+    .then((book) => { res.status(200).json(fixImageUrl(book, req)); })
     .catch((error) => { res.status(404).json({ error: error }); }); 
 };
 
